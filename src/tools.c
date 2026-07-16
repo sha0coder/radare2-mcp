@@ -10,6 +10,12 @@
 
 #define HAVE_VSQL 0
 
+#if defined(R2_ABIVERSION) && R2_ABIVERSION >= 100
+#define R2MCP_TABLE_NEW(name) r_table_new (name, NULL)
+#else
+#define R2MCP_TABLE_NEW(name) r_table_new (name)
+#endif
+
 typedef char *(*ToolFunc)(ServerState *ss, RJson *tool_args);
 
 typedef struct {
@@ -412,7 +418,7 @@ void tools_print_mode_help(void) {
 }
 
 void tools_print_table(const ServerState *ss) {
-	RTable *table = r_table_new ("tools", NULL);
+	RTable *table = R2MCP_TABLE_NEW ("tools");
 	if (!table) {
 		R_LOG_ERROR ("Failed to allocate table");
 		return;
